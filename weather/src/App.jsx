@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import useStore from "./store/store";
+import { useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [input, setInput] = useState("");
+  const { weather, setCity, fetchWeather } = useStore();
+
+  const handleSearch = async () => {
+    setCity(input);
+    await fetchWeather();
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h2>날씨를 알려드립니다.</h2>
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="도시 이름을 영어로 검색해보세요."
+        />
+        <button onClick={handleSearch}>검색</button>
+        {weather && (
+          <>
+            <h3>{weather.name}</h3>
+            <img
+              src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`}
+              alt=""
+          />
+          <p>온도 : {weather.main.temp}'</p>
+          <p>날씨 : {weather.weather[0].description}</p>
+          </>
+        )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
